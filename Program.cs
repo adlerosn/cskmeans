@@ -8,8 +8,9 @@ public class Program
     {
         var boot = DateTime.Now;
         var kBgn = 2;
-        var kQty = 8;
+        var kQty = 10;
         var mDig = 5;
+        var oTests = 100;
         var start = DateTime.Now;
         Console.WriteLine("Started         " + start.ToString() + " (" + (start - boot).TotalSeconds + "s)");
         var (identities, rawData) = SWITRS.LoadDataSet();
@@ -56,13 +57,13 @@ public class Program
         var (valLabels, valWssV) = bestKMeans.PredictWithDebug(dsValidation);
         var valWss = valWssV.DistancesToWSS();
         var valSil = (valLabels, dsValidation).Silhouette("validation");
-        var outlierScoress = new double[100][];
-        var outlierScoressd = new double[100];
-        for (int o = 0; o < 100; o++)
+        var outlierScoress = new double[oTests][];
+        var outlierScoressd = new double[oTests];
+        for (int o = 0; o < oTests; o++)
             outlierScoress[o] = (
                 bestKMeans.CloneWithExtraCentroid(dsCentroid).PredictWithDebug(dsValidation).Item2,
                 valWss, valSil).OutlierScores(o / 10d);
-        for (int o = 0; o < 100; o++)
+        for (int o = 0; o < oTests; o++)
             outlierScoressd[o] = Math.Abs(.5d - outlierScoress[o].Average());
         var oMin = outlierScoressd.IndexOfMin();
         var outlierScoreMax = outlierScoress[oMin].Max();

@@ -21,6 +21,6 @@ runapi:
 zip: cskmeans.zip
 	@echo -ne ''
 
-cskmeans.zip: *.csproj *.sln *.cs *.sql *.txt Makefile sb3-api/gradlew.bat sb3-api/build.gradle sb3-api/settings.gradle sb3-api/HELP.md sb3-api/gradlew sb3-api/.gitignore sb3-api/gradle/wrapper/* sb3-api/src/main/java/com/example/demo/* sb3-api/src/test/java/com/example/demo/* sb3-api/src/main/java/com/example/demo/classification/* sb3-api/src/main/resources/*
+cskmeans.zip: LICENSE README.md .gitignore *.csproj *.sln *.cs *.sql *.txt Makefile sb3-api/gradlew.bat sb3-api/build.gradle sb3-api/settings.gradle sb3-api/HELP.md sb3-api/gradlew sb3-api/.gitignore sb3-api/gradle/wrapper/* sb3-api/src/main/java/com/example/demo/* sb3-api/src/test/java/com/example/demo/* sb3-api/src/main/java/com/example/demo/classification/* sb3-api/src/main/resources/*
 	@rm -f cskmeans.zip
-	zip cskmeans.zip *.csproj *.sln *.cs *.sql *.txt Makefile  sb3-api/gradlew.bat sb3-api/build.gradle sb3-api/settings.gradle sb3-api/HELP.md sb3-api/gradlew sb3-api/.gitignore sb3-api/gradle/wrapper/* sb3-api/src/main/java/com/example/demo/* sb3-api/src/test/java/com/example/demo/* sb3-api/src/main/java/com/example/demo/classification/* sb3-api/src/main/resources/*
+	zip cskmeans.zip LICENSE README.md .gitignore *.csproj *.sln *.cs *.sql *.txt Makefile  sb3-api/gradlew.bat sb3-api/build.gradle sb3-api/settings.gradle sb3-api/HELP.md sb3-api/gradlew sb3-api/.gitignore sb3-api/gradle/wrapper/* sb3-api/src/main/java/com/example/demo/* sb3-api/src/test/java/com/example/demo/* sb3-api/src/main/java/com/example/demo/classification/* sb3-api/src/main/resources/*
