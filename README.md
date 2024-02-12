@@ -7,6 +7,35 @@ This repository reimplements KMeans in plain C# in the form of a externally-sche
 ¹ Deployable via crontab, your internal corporate solution, AWS Batch, Azure Batch, GCP Preemptible VMs, Oracle Burstable Instances, or anything else that runs a commandline at a scheduled time. May require tweaking to fit your needs.<br>
 ² Deployable in your coporate TomCat, WildFly, Docker, Kubernetes, CloudFlare Workers, AWS Lambda, GCP Cloud Functions, or anything else you use to serve a Java Web API. May require tweaking to fit your needs.
 
+## Example lifecycle
+
+1.  Train:
+    ```sh
+    make
+    ```
+2.  Run server:
+    ```sh
+    make runapi
+    ```
+3.  Visit with the browser: `http://localhost:8080`
+4.  Submit the request:
+    | Field | Value |
+    | ----- | ----- |
+    | latitude | 34.16449 |
+    | longitude | -118.15798 |
+    | date | 2009-01-14 |
+    | time | 14:15:00 |
+    ```sh
+    curl -s 'http://localhost:8080/model?latitude=34.16449&longitude=-118.15798&date=2009-01-14&time=14%3A15%3A00' | jq
+    ```
+5.  See the response:
+    ```json
+    {
+      "clusterId": 5,
+      "outlierScore": 0.1585915973320159
+    }
+    ```
+
 ## Performance
 
 The dataset contains 2,671,097 lines by 4 columns stored as double (8 bytes), which is at least 85,475,104 bytes (81.5 MiB).
