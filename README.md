@@ -103,9 +103,9 @@ None. This is inherently no innovation, as:
   - Spring Boot is an old web framework, available [since 2014](https://spring.io/blog/2014/04/01/spring-boot-1-0-ga-released);
   - Java is an old programming language, available [since 1996](https://en.wikipedia.org/wiki/Java_version_history#Release_table).
 
-The “youngest” item is 10 years old by the time this line is written. That's no innovation.
+The “youngest” item is 10 years old by the time this line got written. That's no innovation.
 
-If you “innovate” using these technologies in your business, it's just a century of technical debts that you are removing from your outworn processes.
+If you “innovate” using these technologies in your business, it's just a century worth of technical debts that you are removing from your outworn processes.
 
 ## License
 
