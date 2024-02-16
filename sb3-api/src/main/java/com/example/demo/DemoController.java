@@ -31,8 +31,9 @@ public class DemoController {
 			@RequestParam(name = "time") String timeString) throws Throwable {
 		// Input format converting
 		double timeN = Utils.secondsSinceMidnight(timeString);
-		double dayN = Utils.daysSinceEpoch(dateString);
-		double[] inputData = new double[] { latitude, longitude, dayN, timeN };
+		double dayYN = Utils.daysSinceStartOfYear(dateString);
+		double dayWN = Utils.daysSinceStartOfWeek(dateString);
+		double[] inputData = new double[] { latitude, longitude, dayWN, dayYN, timeN };
 		// Load model from some source (replace with DB connection here)
 		String modelSerialized = Files.readString(Paths.get("../model-as-a-db-row.txt"));
 		String[] modelSerializedParts = modelSerialized.split("@");
@@ -43,7 +44,10 @@ public class DemoController {
 				modelSerializedParts[modelSerializedParts.length - 3],
 				modelSerializedParts[modelSerializedParts.length - 5],
 				modelSerializedParts[modelSerializedParts.length - 6],
-				modelSerializedParts[modelSerializedParts.length - 7]);
+				modelSerializedParts[modelSerializedParts.length - 7],
+				modelSerializedParts[modelSerializedParts.length - 8],
+				modelSerializedParts[modelSerializedParts.length - 9],
+				modelSerializedParts[modelSerializedParts.length - 10]);
 		// Return cluster id
 		return pipeline.takeOne(inputData);
 	}

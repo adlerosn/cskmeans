@@ -185,4 +185,9 @@ public class KMeans
     {
         Console.WriteLine("[\n    " + string.Join(",\n    ", Centroids.Select(centroid => "[" + string.Join(", ", centroid) + "]")) + "\n]");
     }
+
+    public void PrettyPrintDescaledCentroid((double, double)[] scalers)
+    {
+        Console.WriteLine("[\n    " + string.Join(",\n    ", Centroids.Select(centroid => "[" + string.Join(", ", centroid.Zip(scalers).Select(tpl => tpl.Second.Descale(tpl.First))) + "]")) + "\n]");
+    }
 }

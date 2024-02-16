@@ -1,11 +1,11 @@
 package com.example.demo.classification;
 
 public class ClassificationPOJO {
-    public int clusterId;
+    public ClusterPOJO cluster;
     public double outlierScore;
 
-    public ClassificationPOJO(int clusterId, double outlierScore) {
-        this.clusterId = clusterId;
+    public ClassificationPOJO(ClusterPOJO cluster, double outlierScore) {
+        this.cluster = cluster;
         this.outlierScore = outlierScore;
     }
 }

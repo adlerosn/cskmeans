@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
@@ -61,9 +62,26 @@ public static class Utils
         return Math.Sqrt(t.Sum());
     }
 
+    public static int IndexOf<T>(this T[] a, T c)
+    {
+        for (int i = 0; i < a.Length; i++)
+            if ((a[i] == null && c == null) || (a[i] != null && a[i]!.Equals(c)))
+                return i;
+        return -1;
+    }
+
     public static int IndexOfMax(this double[] a)
     {
         double m = double.NegativeInfinity;
+        int x = -1;
+        for (int i = 0; i < a.Length; i++)
+            if (a[i] > m)
+                (x, m) = (i, a[i]);
+        return x;
+    }
+    public static int IndexOfMax(this int[] a)
+    {
+        int m = int.MinValue;
         int x = -1;
         for (int i = 0; i < a.Length; i++)
             if (a[i] > m)
@@ -80,6 +98,17 @@ public static class Utils
                 (x, m) = (i, a[i]);
         return x;
     }
+    public static int IndexOfMin(this int[] a)
+    {
+        int m = int.MaxValue;
+        int x = -1;
+        for (int i = 0; i < a.Length; i++)
+            if (a[i] < m)
+                (x, m) = (i, a[i]);
+        return x;
+    }
+
+    public static IEnumerable<T> WhereNotNull<T>(this IEnumerable<T?> e) => e.Where(x => x != null)!;
 
     public static string ToIsoString(this DateTime a) => a.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ", CultureInfo.InvariantCulture);
     public static string ToJSON(this double[] x) => "[" + string.Join(",", x) + "]";

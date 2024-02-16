@@ -1,15 +1,30 @@
 package com.example.demo.classification;
 
+import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 
 public class Utils {
-    public static long daysSinceEpoch(String isoDateWithoutTime) {
+    public static GregorianCalendar gregorianCalendarFromString(String isoDateWithoutTime) {
         String[] dateParts = isoDateWithoutTime.split("-");
         GregorianCalendar dateCal = new GregorianCalendar(
                 Integer.parseInt(dateParts[0]),
                 Integer.parseInt(dateParts[1]),
                 Integer.parseInt(dateParts[2]));
-        return dateCal.getTimeInMillis() / (24 * 3600 * 1000);
+        return dateCal;
+    }
+
+    public static long daysSinceEpoch(String isoDateWithoutTime) {
+        return gregorianCalendarFromString(isoDateWithoutTime).getTimeInMillis() / (24 * 3600 * 1000);
+    }
+
+    public static int daysSinceStartOfYear(String isoDateWithoutTime) {
+        return Integer.parseInt(new SimpleDateFormat("D").format(gregorianCalendarFromString(isoDateWithoutTime)
+                .getTime()));
+    }
+
+    public static int daysSinceStartOfWeek(String isoDateWithoutTime) {
+        return Integer.parseInt(new SimpleDateFormat("u").format(gregorianCalendarFromString(isoDateWithoutTime)
+                .getTime())) % 7;
     }
 
     public static double secondsSinceMidnight(String isoTimeWithoutDateNorTimezone) {
@@ -28,6 +43,15 @@ public class Utils {
         double[] v = new double[f.length];
         for (int i = 0; i < f.length; i++) {
             v[i] = Double.parseDouble(f[i]);
+        }
+        return v;
+    }
+
+    public static int[] parseInt1D(String data, String sep1) {
+        String[] f = data.split(sep1);
+        int[] v = new int[f.length];
+        for (int i = 0; i < f.length; i++) {
+            v[i] = Integer.parseInt(f[i]);
         }
         return v;
     }

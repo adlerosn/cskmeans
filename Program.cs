@@ -13,17 +13,25 @@ public class Program
         var oTests = 100;
         var start = DateTime.Now;
         Console.WriteLine("Started         " + start.ToString() + " (" + (start - boot).TotalSeconds + "s)");
-        var (identities, rawData) = SWITRS.LoadDataSet();
-        // identities[col] ; values[col][lin]
+        var (rawIdentities, rawLabels, rawData) = SWITRS.LoadDataSet();
+        // identities[lin] ; labels[lin] ; values[col][lin]
+        string?[] labels = rawLabels.Distinct().Order().ToArray();
+        string[] labelsNN = labels.WhereNotNull().ToArray();
         var loaded = DateTime.Now;
         Console.WriteLine("Loaded          " + loaded.ToString() + " (" + (loaded - start).TotalSeconds + "s, DatasetLines=" + rawData[0].Length + ")");
-        var shuffledRawData = rawData.Shuffle(42);
+        var (shuffledRawIdentities, shuffledRawLabels, shuffledRawData) = (rawIdentities, rawLabels, rawData).Shuffle(42);
         var shuffled = DateTime.Now;
         Console.WriteLine("Shuffled        " + shuffled.ToString() + " (" + (shuffled - loaded).TotalSeconds + "s)");
         var (scalers, scaledData) = rawData.Scaled(Scalers.MaxMinScale);
         var scaled = DateTime.Now;
         Console.WriteLine("Scaled          " + scaled.ToString() + " (" + (scaled - shuffled).TotalSeconds + "s)");
-        var (dsTrain, dsTest, dsValidation) = scaledData.SplitTTV(96, 2, 2);
+        var (
+            (idTrain, lbTrain, dsTrain),
+            (idTest, lbTest, dsTest),
+            (idValidation, lbValidation, dsValidation)
+        ) = (shuffledRawIdentities, shuffledRawLabels, scaledData).SplitTTV(96, 2, 2, 8, true);
+        if (dsTrain.Length <= 0 || idTrain.Length <= 0)
+            throw new Exception("Reduce the number of SplitTTV subdivisions");
         var dsCentroid = KMeans.FromData(1, dsTrain).Centroids[0];
         Console.WriteLine("> TrainCentroids=[" + string.Join(",", dsCentroid) + "]");
         var splitTTV = DateTime.Now;
@@ -54,9 +62,11 @@ public class Program
         Console.WriteLine("" + kQty + "x Silhouettes " + silhouette.ToString() + " (" + (silhouette - test).TotalSeconds + "s)");
         var bestk = composite.IndexOfMax();
         var bestKMeans = kmeanss[bestk];
-        var (valLabels, valWssV) = bestKMeans.PredictWithDebug(dsValidation);
+        var (valClusters, valWssV) = bestKMeans.PredictWithDebug(dsValidation);
+        int[] prevalenceTrue = (valClusters, lbValidation, labelsNN).PrevalenceByCluster();
+        int[] prevalenceCompensated = (valClusters, lbValidation, labelsNN).PrevalenceByCluster(true);
         var valWss = valWssV.DistancesToWSS();
-        var valSil = (valLabels, dsValidation).Silhouette("validation");
+        var valSil = (valClusters, dsValidation).Silhouette("validation");
         var outlierScoress = new double[oTests][];
         var outlierScoressd = new double[oTests];
         for (int o = 0; o < oTests; o++)
@@ -74,6 +84,10 @@ public class Program
         scalers.PrettyPrintScalers();
         Console.Write("Centroids=");
         bestKMeans.PrettyPrintCentroid();
+        Console.Write("DescaledCentroids=");
+        bestKMeans.PrettyPrintDescaledCentroid(scalers);
+        Console.WriteLine("Prevalence=[" + string.Join(",", prevalenceTrue) + "]");
+        Console.WriteLine("CompensatedPrevalence=[" + string.Join(",", prevalenceCompensated) + "]");
         Console.WriteLine("bestK=" + (bestk + kBgn) + " clusters");
         Console.WriteLine("WSS=" + valWss);
         Console.WriteLine("Sil=" + valSil);
@@ -82,7 +96,9 @@ public class Program
         Console.WriteLine("Validation        " + validation.ToString() + " (" + (validation - silhouette).TotalSeconds + "s)");
         File.WriteAllText(
             "model-as-a-db-row.txt",
-            start.ToIsoString() + "@" + validation.ToIsoString() + "@" + (kBgn + bestk) + "@" + (oMin / 10d) + "@" +
+            start.ToIsoString() + "@" + validation.ToIsoString() + "@" + (kBgn + bestk) + "@" +
+            string.Join(";", labelsNN) + "@" + string.Join(";", prevalenceTrue) + "@" +
+            string.Join(";", prevalenceCompensated) + "@" + (oMin / 10d) + "@" +
             valWss + "@" + valSil + "@" + (valWss + valSil) + "@" + string.Join(":", dsCentroid) + "@" +
             string.Join(";", scalers.Select(x => x.Item1 + ":" + x.Item2)) + "@" +
             string.Join(";", bestKMeans.Centroids.Select(x => string.Join(":", x)))
