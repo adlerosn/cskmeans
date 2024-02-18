@@ -99,7 +99,7 @@ public class Program
             start.ToIsoString() + "@" + validation.ToIsoString() + "@" + (kBgn + bestk) + "@" +
             string.Join(";", labelsNN) + "@" + string.Join(";", prevalenceTrue) + "@" +
             string.Join(";", prevalenceCompensated) + "@" + (oMin / 10d) + "@" +
-            valWss + "@" + valSil + "@" + (valWss + valSil) + "@" + string.Join(":", dsCentroid) + "@" +
+            valWss + "@" + valSil + "@" + (valSil - valWss) + "@" + string.Join(":", dsCentroid) + "@" +
             string.Join(";", scalers.Select(x => x.Item1 + ":" + x.Item2)) + "@" +
             string.Join(";", bestKMeans.Centroids.Select(x => string.Join(":", x)))
         );
